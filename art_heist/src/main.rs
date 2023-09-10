@@ -10,13 +10,101 @@ struct Path {
     // Any other info about the door would go here
 }
 
+#[derive(PartialEq, Eq, Clone, Debug)]
+struct Resource {
+    name: String, // E.g. "Flashlight"
+    description: String, // "E.g. A small portable source of light"
+    picked: bool, // True if user selected resource
+}
+
+// Identification unit for a challenge
 #[derive(PartialEq, Eq, Clone, Copy)]
 struct ChallengeID(usize);
+
+// // Letting users pick up resources 
+// fn pick_resources(available_resources: &[Resource]) -> Vec<Resource> {
+//     let mut selected_resources = Vec::new();
+//     println!("Available Resources:");
+//     for (index, resource) in available_resources.iter().enumerate() {
+//         println!("{}. {} - {}", index + 1, resource.name, resource.description);
+//     }
+    
+//     while selected_resources.len() < 3 {
+//         print!("Enter the number of the resource to pick (1-{}): ", available_resources.len());
+//         io::stdout().flush().unwrap();
+//         let mut input = String::new();
+//         io::stdin().read_line(&mut input).unwrap();
+        
+//         if let Ok(choice) = input.trim().parse::<usize>() {
+//             if choice >= 1 && choice <= available_resources.len() {
+//                 let selected_index = choice - 1;
+//                 if !selected_resources.contains(&available_resources[selected_index]) {
+//                     selected_resources.push(available_resources[selected_index].clone());
+//                     println!("You picked {}.", available_resources[selected_index].name);
+//                 } else {
+//                     println!("You already picked that resource.");
+//                 }
+//             } else {
+//                 println!("Invalid choice. Please enter a number between 1 and {}.", available_resources.len());
+//             }
+//         } else {
+//             println!("Invalid input. Please enter a valid number.");
+//         }
+//     }
+    
+//     selected_resources
+// }
+
 
 fn main() {
     use std::io;
     // We need the Write trait so we can flush stdout
     use std::io::Write;
+
+    // resources that the user can choose in the beginning
+    let available_resources = [
+        Resource {
+            name: "Flashlight".to_string(),
+            description: "A small flashlight with fresh batteries.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Night Vision Goggles".to_string(),
+            description: "Special goggles that allow you to see in the dark.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Lock Pick Set".to_string(),
+            description: "A set of lockpicking tools.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Knife".to_string(),
+            description: "A sharp knife that could be useful in a pinch.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Makeup Palette".to_string(),
+            description: "A makeup palette that could be used for disguise.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Marbles".to_string(),
+            description: "A bag of marbles that can be used as distractions.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Banana".to_string(),
+            description: "A ripe banana. It might come in handy.".to_string(),
+            picked: false,
+        },
+        Resource {
+            name: "Pocket Sand".to_string(),
+            description: "A small bag of sand that could be used to blind pursuers.".to_string(),
+            picked: false,
+        },
+    ];
+
         
     let challenges = [
         // ChallengeID corresponds to the index inside list challenges that you want
@@ -85,7 +173,38 @@ fn main() {
     println!("The Spooky Mansion Adventure");
     println!("============================");
     println!();
-    println!("You've been walking for hours in the countryside, and have finally stumbled on the spooky mansion you read about in the tour guide.");
+    println!("You are embarking on an art heist at ___. First pick three tools you will carry into the museum.");
+    
+    // pick resources
+    let mut selected_resources = Vec::new();
+    println!("Available Resources:");
+    for (index, resource) in available_resources.iter().enumerate() {
+        println!("{}. {} - {}", index + 1, resource.name, resource.description);
+    }
+    
+    while selected_resources.len() < 3 {
+        print!("Enter the number of the resource to pick (1-{}): ", available_resources.len());
+        io::stdout().flush().unwrap();
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        
+        if let Ok(choice) = input.trim().parse::<usize>() {
+            if choice >= 1 && choice <= available_resources.len() {
+                let selected_index = choice - 1;
+                if !selected_resources.contains(&available_resources[selected_index]) {
+                    selected_resources.push(available_resources[selected_index].clone());
+                    println!("You picked {}.", available_resources[selected_index].name);
+                } else {
+                    println!("You already picked that resource.");
+                }
+            } else {
+                println!("Invalid choice. Please enter a number between 1 and {}.", available_resources.len());
+            }
+        } else {
+            println!("Invalid input. Please enter a valid number.");
+        }
+    }
+    
     loop {
         // We don't want to move out of rooms, so we take a reference
         let here = &challenges[at.0];
@@ -99,6 +218,13 @@ fn main() {
             input.clear();
             io::stdin().read_line(&mut input).unwrap();
             let input = input.trim();
+
+            // give option to leave game
+            if input.eq("exit") || input.eq("quit") {
+                println!("Exiting the game. Goodbye!");
+                return;
+            }
+
             if let Some(path) = here.paths.iter().find(|d| d.triggers.iter().any(|t| *t == input)) {
                 if let Some(msg) = &path.message {
                     println!("{}", msg);
