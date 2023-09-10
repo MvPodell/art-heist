@@ -11,7 +11,7 @@ struct Path {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
-struct RoomID(usize);
+struct ChallengeID(usize);
 
 fn main() {
     use std::io;
@@ -23,7 +23,7 @@ fn main() {
         Challenge { // 0
             name: "pickTools".into(), // Turn a &'static string (string constant) into a String
             desc: "It's time to pick your tools".into(),
-            paths: vec![Choice{target:ChallengeID(1), triggers:vec!["1".into(), "2".into(), "3".into()], message:Some("Interesting choice...")}]
+            paths: vec![Path{target:ChallengeID(1), triggers:vec!["1".into(), "2".into(), "3".into()], message:Some("Interesting choice...".to_string())}]
         },
         Challenge { //1
             name: "entrance".into(),
@@ -78,19 +78,19 @@ fn main() {
         },
     ];
 
-    let end_rooms = [RoomID(6), RoomID(6), RoomID(6)];
+    let end_challenges = [ChallengeID(6), ChallengeID(6), ChallengeID(6)];
     let mut input = String::new();
 
-    let mut at = RoomID(0);
+    let mut at = ChallengeID(0);
     println!("The Spooky Mansion Adventure");
     println!("============================");
     println!();
     println!("You've been walking for hours in the countryside, and have finally stumbled on the spooky mansion you read about in the tour guide.");
     loop {
         // We don't want to move out of rooms, so we take a reference
-        let here = &rooms[at.0];
+        let here = &challenges[at.0];
         println!("{}\n{}", here.name, here.desc);
-        if end_rooms.contains(&at) {
+        if end_challenges.contains(&at) {
             break;
         }
         loop {
@@ -99,11 +99,11 @@ fn main() {
             input.clear();
             io::stdin().read_line(&mut input).unwrap();
             let input = input.trim();
-            if let Some(door) = here.doors.iter().find(|d| d.triggers.iter().any(|t| *t == input)) {
-                if let Some(msg) = &door.message {
+            if let Some(path) = here.paths.iter().find(|d| d.triggers.iter().any(|t| *t == input)) {
+                if let Some(msg) = &path.message {
                     println!("{}", msg);
                 }
-                at = door.target;
+                at = path.target;
                 break;
             } else {
                 println!("You can't do that!");
