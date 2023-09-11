@@ -79,7 +79,7 @@ fn main() {
             paths: vec![Path{target:ChallengeID(1), triggers:vec!["1".into(), "2".into(), "3".into()], message:Some("Nice job!".to_string())}]
         },
         Challenge { //1
-            name: "entrance".into(),
+            name: "Entrance".into(),
             desc: "How do you plan to enter the museum? Through the (1) door, (2) vent, or (3) window?".into(),
             paths: vec![
                 Path{target:ChallengeID(2), triggers:vec!["1".into()], message:Some("You slip through the door and find yourself in a dark basement.".into())},
@@ -101,7 +101,7 @@ fn main() {
             name: "Footsteps".into(),
             desc: "You exit into a hallway but, you hear footsteps coming down. Do you (1) run blindly away, (2) hide behind a statue, or (3) run towards the sound?".into(),
             paths:vec![
-                Path{target:ChallengeID(4), triggers:vec!["1".into()], message:Some("The guard's partner has caught you. End Game".into())},
+                Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard's partner has caught you. End Game".into())},
                 Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The security guard stops next to you...you need a distraction. TBD".into())},
                 Path{target:ChallengeID(5), triggers:vec!["3".into()], message:Some("You approach the security guard...what now? TBD".into())},
             ]
@@ -165,8 +165,9 @@ fn main() {
 
     let end_challenges = [ChallengeID(10), ChallengeID(9)];
     let mut input = String::new();
+    let mut current_challenge_id = ChallengeID(0);
 
-    let mut at = ChallengeID(0);
+    
     println!();
     println!();
     println!("{}", ascii_art::TITLE);
@@ -194,9 +195,9 @@ fn main() {
                 let selected_index = choice - 1;
                 if !selected_resources.contains(&available_resources[selected_index]) {
                     selected_resources.push(available_resources[selected_index].clone());
-                    println!("You picked {}.", available_resources[selected_index].name);
+                    println!("You picked up the {}.", available_resources[selected_index].name);
                 } else {
-                    println!("Already have resource");
+                    println!("You already have one of those! Pick something else.");
                 }
             } else {
                 println!("Invalid input. Enter a number between 1 and {}.", available_resources.len());
@@ -205,36 +206,85 @@ fn main() {
             println!("Invalid input. Enter a valid number.");
         }
     }
+
+    fn find_challenge_by_id(challenges: &[Challenge], id: ChallengeID) -> Option<&Challenge> {
+        challenges.get(id.0)
+    }
     
     loop {
-        // We don't want to move out of rooms, so we take a reference
-        let here = &challenges[at.0];
-        println!("{}\n{}", here.name, here.desc);
-        if end_challenges.contains(&at) {
-            break;
-        }
-        loop {
-            print!("What will you do?\n> ");
-            io::stdout().flush().unwrap();
-            input.clear();
-            io::stdin().read_line(&mut input).unwrap();
-            let input = input.trim();
-
-            // give option to leave game
-            if input.eq("exit") || input.eq("quit") {
-                println!("Exiting the game. Goodbye!");
-                return;
-            }
-
-            if let Some(path) = here.paths.iter().find(|d| d.triggers.iter().any(|t| *t == input)) {
-                if let Some(msg) = &path.message {
-                    println!("{}", msg);
-                }
-                at = path.target;
+        let current_challenge = match find_challenge_by_id(&challenges, current_challenge_id) {
+            Some(challenge) => challenge,
+            None => {
+                println!("Game over!");
                 break;
-            } else {
-                println!("You can't do that!");
+            }
+        };
+        // We don't want to move out of rooms, so we take a reference
+        let here = &challenges[current_challenge_id.0];
+        println!("{}\n{}", here.name, here.desc);
+
+        // get player input
+        io::stdout().flush().unwrap();
+        input.clear();
+        io::stdin().read_line(&mut input).unwrap();
+        let input = input.trim();
+
+        // Check if the player's choice is a valid option
+        let selected_path_index = input.parse::<usize>();
+
+        match selected_path_index {
+            Ok(index) => {
+                if index >= 1 && index <= current_challenge.paths.len() {
+                    let selected_path = &current_challenge.paths[index - 1];
+
+                    if let Some(message) = &selected_path.message {
+                        println!("{}", message);
+                    }
+
+                    // Check if this path leads to ending the game
+                    if selected_path.target.0 == 10 {
+                        println!("Game Over!");
+                        return; // End the game here
+                    }
+
+                    // Move to the next challenge based on the selected path's target
+                    current_challenge_id = selected_path.target;
+                } else {
+                    println!("Invalid choice. Please select a valid option.");
+                }
+            }
+            Err(_) => {
+                println!("Invalid input. Please enter a number.");
             }
         }
+
+
+        // if end_challenges.contains(&current_challenge_id) {
+        //     println!{"hello"}
+        //     break;
+        // }
+        // loop {
+        //     // print!("What will you do?\n> ");
+        //     io::stdout().flush().unwrap();
+        //     input.clear();
+        //     io::stdin().read_line(&mut input).unwrap();
+        //     let input = input.trim();
+
+        //     // give option to leave game
+        //     if input.eq("exit") || input.eq("quit") {
+        //         println!("Exiting the game. Goodbye!");
+        //         return;
+        //     }
+
+        //     if let Some(path) = here.paths.iter().find(|d| d.triggers.iter().any(|t| *t == input)) {
+        //         if let Some(msg) = &path.message {
+        //             println!("{}", msg);
+        //         }
+        //         current_challenge_id = path.target;
+        //         break;
+        //     } else {
+        //         println!("You can't do that!");
+        //     }
+        // }
     }
 }
