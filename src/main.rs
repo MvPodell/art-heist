@@ -202,7 +202,7 @@ fn main() {
     println!("============================");
     println!();
     println!("{}", ascii_museum);
-    println!("You are embarking on an art heist at ___. First pick three tools you will carry into the museum.");
+    println!("You are embarking on an art heist at ___.");
     
     // pick resources
     let mut selected_resources = Vec::new();
