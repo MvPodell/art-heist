@@ -89,17 +89,17 @@ fn main() {
         },
         Challenge { // 2
             name: "You're stuck!".into(),
-            desc: "Oh no, you are locked in...do you (1) eat a snack, (2) pick the lock, (3) use the flashlight?".into(),
+            desc: "Oh no, you are locked in...do you (1) take a moment to think and eat a snack, (2) go straight to the door and pick the lock, (3) shine your flashlight to see if you can find a way out?".into(),
             // resource checking
             paths:vec![
-                Path{target:ChallengeID(3), triggers:vec!["1".into()], message:Some("You eat a banana, but now you smell like banana".into())},
-                Path{target:ChallengeID(3), triggers:vec!["2".into()], message:Some("Pick the lock".into())},
+                Path{target:ChallengeID(3), triggers:vec!["1".into()], message:Some("The pungent smell of banana fills the room, so much so that you can almost see it drifting out under the door.".into())},
+                Path{target:ChallengeID(3), triggers:vec!["2".into()], message:Some("You pick the lock on the door and it swings open too fast for you to catch it before it slams with a CRASH into the wall. ".into())},
                 Path{target:ChallengeID(3), triggers:vec!["3".into()], message:Some("You turn on the flashlight and discover a secret door".into())},
             ]
         },
         Challenge { // 3
             name: "Footsteps".into(),
-            desc: "You exit into a hallway but, you hear footsteps coming down. Do you (1) run blindly away, (2) hide behind a statue, or (3) run towards the sound?".into(),
+            desc: "You exit into a hallway and hear footsteps coming your way. Do you (1) run blindly away, (2) hide behind a nearby statue, or (3) run towards the sound?".into(),
             paths:vec![
                 Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard's partner has caught you. End Game".into())},
                 Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The security guard stops next to you...you need a distraction. TBD".into())},
@@ -108,7 +108,7 @@ fn main() {
         },
         Challenge { // 4
             name: "Map".into(),
-            desc: "You successfully evaded the guard. Where do you go next, (1) the tourist shop, (2) security office, or (3) cafe?".into(),
+            desc: "You've successfully evaded the guard! Where do you go next, (1) the tourist shop, (2) security office, or (3) cafe?".into(),
             paths:vec![
                 Path{target:ChallengeID(6), triggers:vec!["1".into()], message:Some("You enter the gift shop...".into())},
                 Path{target:ChallengeID(7), triggers:vec!["2".into()], message:Some("You enter the security office...".into())},
