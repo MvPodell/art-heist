@@ -102,7 +102,7 @@ fn main() {
             desc: "You exit into a hallway and hear footsteps coming your way. Do you (1) run blindly away, (2) hide behind a nearby statue, or (3) run towards the sound?".into(),
             paths:vec![
                 Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard's partner has caught you. End Game".into())},
-                Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The security guard stops next to you...you need a distraction. TBD".into())},
+                Path{target:ChallengeID(11), triggers:vec!["2".into()], message:Some("The security guard stops next to you...you need a distraction. TBD".into())},
                 Path{target:ChallengeID(5), triggers:vec!["3".into()], message:Some("You approach the security guard...what now? TBD".into())},
             ]
         },
@@ -112,15 +112,15 @@ fn main() {
             paths:vec![
                 Path{target:ChallengeID(6), triggers:vec!["1".into()], message:Some("You enter the gift shop...".into())},
                 Path{target:ChallengeID(7), triggers:vec!["2".into()], message:Some("You enter the security office...".into())},
-                Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("That's lame. End Game".into())},
+                Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("You enter the cafe and find a group of guards sitting at one of the tables eating doughnuts. You're toast.".into())},
             ]
         },
         Challenge { // 5
             name: "Talk to Guard".into(),
-            desc: "You run smack into the guard. Quick do you (1) pretend to be a ghost, (2) pretend to be lost, or (3) be friendly".into(),
+            desc: "You run smack into the guard. Do something quickly! Do you (1) pretend to be a ghost, (2) pretend to be lost, or (3) try to befriend them".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Success".into())},
-                Path{target:ChallengeID(8), triggers:vec!["2".into()], message:Some("Bad End".into())},
+                Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("OOoooOooooOOO".into())},
+                Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("Success".into())},
             ]
         },
@@ -161,6 +161,25 @@ fn main() {
             desc: "You Lose".into(),
             paths:vec![]
         },
+        Challenge { // 11
+            name: "Distraction!".into(),
+            desc: "The guard's almost reached you! What are you going to do? 1) Throw a marble in another direction to get them off your tail 2) strategically place your banana peel so that they slip 3) Attack them with your knife?".into(),
+            paths:vec![
+                Path{target:ChallengeID(4), triggers:vec!["3".into()], message:Some("The marble bounces off into another room and the guard runs after the noise.".into())},
+                Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The guard slips on the banana peel and you manage to run off while they're down.".into())},
+                Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard knows martial arts. They pin you to the ground easily and call the police.".into())},
+            ]
+        },
+        Challenge { // 12
+            name: "It's dark".into(),
+            desc: "You run towards the guard, taking advantage of the darkness to catch them off guard. What's your course of action? \n 1) Attack them 2) Blind them with your sand. 3) Cautiously talk to them.".into(),
+            paths:vec![
+                Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("Really? You're a CS major, stop kidding yourself.".into())},
+                Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The guard screams and claws at their eyes and you manage to escape during their suffering.".into())},
+                Path{target:ChallengeID(5), triggers:vec!["1".into()], message:Some("".into())},
+            ]
+        }
+
     ];
 
     let end_challenges = [ChallengeID(10), ChallengeID(9)];
