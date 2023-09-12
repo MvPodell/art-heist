@@ -138,7 +138,7 @@ fn main() {
             desc: "You sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("You see the painting on the cameras, now you know where to go".into())},
-                Path{target:ChallengeID(8), triggers:vec!["2".into()], message:Some("Bad End".into())},
+                Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Congrats you found blueprints that show you where the painting is".into())},
             ]
         },
@@ -242,7 +242,7 @@ fn main() {
                     }
 
                     // Check if this path leads to ending the game
-                    if selected_path.target.0 == 10 {
+                    if selected_path.target.0 == 10 || selected_path.target.0 == 9{
                         println!("Game Over!");
                         return; // End the game here
                     }
