@@ -2,7 +2,8 @@ mod ascii_art;
 struct Challenge {
     name: String, // E.g. "Antechamber"
     desc: String, // E.g. "Dark wood paneling covers the walls.  The gilded northern doorway lies open."
-    paths: Vec<Path>
+    paths: Vec<Path>,
+    password: Option<String>
 }
 struct Path {
     target: ChallengeID, // More about this in a minute
@@ -76,7 +77,8 @@ fn main() {
         Challenge { // 0
             name: "Rules".into(), // Turn a &'static string (string constant) into a String
             desc: "This is a choose your own adventure. Use the number keys to select your choice and press enter to move forward in the game. Pick 1, 2, or 3.".into(),
-            paths: vec![Path{target:ChallengeID(1), triggers:vec!["1".into(), "2".into(), "3".into()], message:Some("Nice job!".to_string())}]
+            paths: vec![Path{target:ChallengeID(1), triggers:vec!["1".into(), "2".into(), "3".into()], message:Some("Nice job!".to_string())}],
+            password: None
         },
         Challenge { //1
             name: "Entrance".into(),
@@ -85,7 +87,8 @@ fn main() {
                 Path{target:ChallengeID(2), triggers:vec!["1".into()], message:Some("You slip through the door and find yourself in a dark basement.".into())},
                 Path{target:ChallengeID(2), triggers:vec!["2".into()], message:Some("You shimmy through an exterior vent and crawl through the ducts.".into())},
                 Path{target:ChallengeID(2), triggers:vec!["3".into()], message:Some("You climb through the window and find yourself in a dark storage room.".into())}
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 2
             name: "You're stuck!".into(),
@@ -95,7 +98,8 @@ fn main() {
                 Path{target:ChallengeID(3), triggers:vec!["1".into()], message:Some("The pungent smell of banana fills the room, so much so that you can almost see it drifting out under the door.".into())},
                 Path{target:ChallengeID(3), triggers:vec!["2".into()], message:Some("You pick the lock on the door and it swings open too fast for you to catch it before it slams with a CRASH into the wall. ".into())},
                 Path{target:ChallengeID(3), triggers:vec!["3".into()], message:Some("You turn on the flashlight and discover a secret door".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 3
             name: "Footsteps".into(),
@@ -104,7 +108,8 @@ fn main() {
                 Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard's partner has caught you. End Game".into())},
                 Path{target:ChallengeID(11), triggers:vec!["2".into()], message:Some("The security guard stops next to you...you need a distraction. TBD".into())},
                 Path{target:ChallengeID(5), triggers:vec!["3".into()], message:Some("You approach the security guard...what now? TBD".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 4
             name: "Map".into(),
@@ -113,7 +118,8 @@ fn main() {
                 Path{target:ChallengeID(6), triggers:vec!["1".into()], message:Some("You enter the gift shop...".into())},
                 Path{target:ChallengeID(7), triggers:vec!["2".into()], message:Some("You enter the security office...".into())},
                 Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("You enter the cafe and find a group of guards sitting at one of the tables eating doughnuts. You're toast.".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 5
             name: "Talk to Guard".into(),
@@ -122,7 +128,8 @@ fn main() {
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("OOoooOooooOOO".into())},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("Success".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 6
             name: "Tourist Shop".into(),
@@ -131,16 +138,18 @@ fn main() {
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Success".into())},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("Success".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 7
             name: "Security office".into(),
             desc: "You sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("You see the painting on the cameras, now you know where to go".into())},
+                Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into())},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Congrats you found blueprints that show you where the painting is".into())},
-            ]
+            ],
+            password: Some("A map".into()), 
         },
         Challenge { // 8
             name: "Painting".into(),
@@ -149,17 +158,20 @@ fn main() {
                 Path{target:ChallengeID(9), triggers:vec!["1".into()], message:None},
                 Path{target:ChallengeID(9), triggers:vec!["2".into()], message:None},
                 Path{target:ChallengeID(9), triggers:vec!["3".into()], message:None},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 9
             name: "Good End".into(),
             desc: "You win".into(),
-            paths:vec![]
+            paths:vec![],
+            password: None, 
         },
         Challenge { // 10
             name: "Bad End".into(),
             desc: "You Lose".into(),
-            paths:vec![]
+            paths:vec![],
+            password: None, 
         },
         Challenge { // 11
             name: "Distraction!".into(),
@@ -168,7 +180,8 @@ fn main() {
                 Path{target:ChallengeID(4), triggers:vec!["3".into()], message:Some("The marble bounces off into another room and the guard runs after the noise.".into())},
                 Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The guard slips on the banana peel and you manage to run off while they're down.".into())},
                 Path{target:ChallengeID(10), triggers:vec!["1".into()], message:Some("The guard knows martial arts. They pin you to the ground easily and call the police.".into())},
-            ]
+            ],
+            password: None, 
         },
         Challenge { // 12
             name: "It's dark".into(),
@@ -177,12 +190,13 @@ fn main() {
                 Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("Really? You're a CS major, stop kidding yourself.".into())},
                 Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The guard screams and claws at their eyes and you manage to escape during their suffering.".into())},
                 Path{target:ChallengeID(5), triggers:vec!["1".into()], message:Some("".into())},
-            ]
+            ],
+            password: None, 
         }
 
     ];
 
-    let end_challenges = [ChallengeID(10), ChallengeID(9)];
+    // let end_challenges = [ChallengeID(10), ChallengeID(9)];
     let mut input = String::new();
     let mut current_challenge_id = ChallengeID(0);
 
@@ -264,6 +278,21 @@ fn main() {
                     if selected_path.target.0 == 10 || selected_path.target.0 == 9{
                         println!("Game Over!");
                         return; // End the game here
+                    }
+
+                    // password checking
+                    if let Some(password) = current_challenge.password.clone() {
+                        println!("This area is password protected. Enter the password to proceed:");
+                        let mut password_input = String::new();
+                        io::stdin().read_line(&mut password_input).unwrap();
+                        let password_input = password_input.trim();
+
+                        if password_input == password {
+                            println!("Password correct! You may proceed.");
+                        } else {
+                            println!("Incorrect password. Access denied.");
+                            continue; //go back to the security office options
+                        }
                     }
 
                     // Move to the next challenge based on the selected path's target
