@@ -184,7 +184,7 @@ fn main() {
             name: "Security office".into(),
             desc: "\n \nYou sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("cameras".into()), post_message:Some("You see the painting on the cameras, now you know where to go".into()), required_resource: None},
+                Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("cameras".into()), post_message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into())}, required_resource: None},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("fridge".into()), post_message:Some("Bad End".into()), required_resource: None},
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("posters".into()), post_message:Some("Congrats you found blueprints that show you where the painting is".into()), required_resource: None},
             ],
@@ -195,7 +195,7 @@ fn main() {
             desc: "\n \nYou finally arrive at the painting, how do you get it off the wall: (1) cut it out of the frame, (2) pick the security lock, (3) use acetone to dissolve the clue".into(),
             paths:vec![
                 Path{target:ChallengeID(9), triggers:vec!["1".into()], pre_message: Some("cut it out".into()), post_message:None, required_resource: Some(available_resources[3].clone())},
-                Path{target:ChallengeID(9), triggers:vec!["2".into()], pre_message: Some("pick the lock".into()), post_message:None, required_resource: Some(available_resources[2].clone())},
+                Path{target:ChallengeID(13), triggers:vec!["2".into()], pre_message: Some("pick the lock".into()), post_message:None, required_resource: Some(available_resources[2].clone())},
                 Path{target:ChallengeID(9), triggers:vec!["3".into()], pre_message: Some("dissolve the glue".into()), post_message:None, required_resource: Some(available_resources[4].clone())},
             ],
             password: None, 
