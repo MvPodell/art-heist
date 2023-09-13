@@ -164,8 +164,8 @@ fn main() {
             name: "Talk to Guard".into(),
             desc: "\n \nYou run smack into the guard. Do something quickly! Do you (1) pretend to be a ghost, (2) pretend to be lost, or (3) try to befriend them".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("pretend to be a ghost".into()), post_message:Some("OOoooOooooOOO".into()), required_resource: None},
-                Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("pretend to be lost".into()), post_message:Some("Bad End".into()), required_resource: None},
+                Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("pretend to be a ghost".into()), post_message:Some("OOoooOooooOOO".into()), required_resource: Some(available_resources[4].clone())},
+                Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("pretend to be lost".into()), post_message:Some("The guard didn't believe your act and called the police".into()), required_resource: None},
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("befriend the guard".into()), post_message:Some("Success".into()), required_resource: None},
             ],
             password: None, 
@@ -175,8 +175,8 @@ fn main() {
             desc: "\n \nYou are at the tourist shop: (1) try on merch, (2) look at the tourist maps, (3) raid the cash register".into(),
             paths:vec![
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("try on merch".into()), post_message:Some("Success".into()), required_resource: None},
-                Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("look at the tourist maps".into()), post_message:Some("Bad End".into()), required_resource: None},
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("raid the cash register".into()), post_message:Some("Success".into()), required_resource: None},
+                Path{target:ChallengeID(8), triggers:vec!["2".into()], pre_message: Some("look at the tourist maps".into()), post_message:Some("You look at the maps and find directions to the painting".into()), required_resource: None},
+                Path{target:ChallengeID(10), triggers:vec!["3".into()], pre_message: Some("raid the cash register".into()), post_message:Some("You found money but not the painting, you did not complete the mission".into()), required_resource: None},
             ],
             password: None, 
         },
@@ -185,7 +185,7 @@ fn main() {
             desc: "\n \nYou sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
                 Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("cameras".into()), post_message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into()), required_resource: None},
-                Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("fridge".into()), post_message:Some("Bad End".into()), required_resource: None},
+                Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("fridge".into()), post_message:Some("Food? At a time like this?".into()), required_resource: None},
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("posters".into()), post_message:Some("Congrats you found blueprints that show you where the painting is".into()), required_resource: None},
             ],
             password: Some("A map".into()), 
@@ -234,10 +234,10 @@ fn main() {
         },
         Challenge { // 13
             name: "Lock picking".into(),
-            desc: "You've unlocked the painting! 1 to End Game".into(),
+            desc: "Press 1 to End Game".into(),
             paths:vec![Path{target:ChallengeID(9), triggers:vec!["1".into()], pre_message: None, post_message: None, required_resource: None},],
             password: None, 
-        }
+        },
 
     ];
 
@@ -340,6 +340,12 @@ fn main() {
                         }
                     }
 
+                    // allow user to quit game
+                    if input.eq("exit") || input.eq("quit") {
+                        println!("Exiting the game. Goodbye!");
+                        return;
+                    }
+
                     if let Some(post_message) = &selected_path.post_message {
                         println!("{}", post_message);
                     }
@@ -355,11 +361,11 @@ fn main() {
                         // check if the  current is the lock-picking challenge - 13
                         let lock_picked = lock_picking_challenge();
                         if lock_picked {
-                            println!("You've successfully picked the lock and progressed to the next challenge.");
+                            println!("You've successfully picked the lock and stolen the painting. You win!");
                             // Move to the next challenge 
-                            
+                            current_challenge_id = ChallengeID(9);
                         } else {
-                            println!("You can't get the painting off by picking the lock");
+                            println!("You can't get the painting off by picking the lock. You lose :(");
                             //  return to original challenge
                             current_challenge_id = ChallengeID(8);
                         }
