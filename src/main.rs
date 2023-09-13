@@ -184,7 +184,7 @@ fn main() {
             name: "Security office".into(),
             desc: "\n \nYou sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("cameras".into()), post_message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into())}, required_resource: None},
+                Path{target:ChallengeID(8), triggers:vec!["3".into()], pre_message: Some("cameras".into()), post_message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into()), required_resource: None},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], pre_message: Some("fridge".into()), post_message:Some("Bad End".into()), required_resource: None},
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], pre_message: Some("posters".into()), post_message:Some("Congrats you found blueprints that show you where the painting is".into()), required_resource: None},
             ],
