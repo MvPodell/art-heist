@@ -1,4 +1,5 @@
 mod ascii_art;
+
 struct Challenge {
     name: String, // E.g. "Antechamber"
     desc: String, // E.g. "Dark wood paneling covers the walls.  The gilded northern doorway lies open."
@@ -22,6 +23,42 @@ struct Resource {
 // Identification unit for a challenge
 #[derive(PartialEq, Eq, Clone, Copy)]
 struct ChallengeID(usize);
+
+fn lock_picking_challenge() -> bool{
+    use std::io;
+    let secret_combination = "1402";
+
+    println!("You need to guess the 4-digit combination.");
+
+    let mut attempts = 3;
+
+    while attempts > 0 {
+        println!("Enter a 4-digit combination: ");
+        let mut guess = String::new();
+        io::stdin().read_line(&mut guess).expect("Failed to read line");
+        let guess = guess.trim();
+
+        let input_set: std::collections::HashSet<char> = guess.chars().collect();
+        let actual_set: std::collections::HashSet<char> = secret_combination.chars().collect();
+
+        if guess == secret_combination {
+            println!("Congratulations! You successfully unlocked the lock.");
+            return true;
+        } else if input_set ==actual_set{
+            println!("You have all the right numbers but in the wrong order. You have {} attempts remaining.", attempts - 1);
+        } else {
+            println!("Incorrect combination. You have {} attempts remaining.", attempts - 1);
+        }
+
+        attempts -= 1;
+
+        if attempts == 0 {
+            println!("Out of attempts. The lock remains locked.");
+        }
+    }
+    return false;
+}
+
 
 fn main() {
     use std::io;
@@ -136,8 +173,8 @@ fn main() {
             desc: "You are at the tourist shop: (1) try on merch, (2) look at the tourist maps, (3) raid the cash register".into(),
             paths:vec![
                 Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Success".into())},
-                Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("Success".into())},
+                Path{target:ChallengeID(8), triggers:vec!["2".into()], message:Some("Success".into())},
+                Path{target:ChallengeID(10), triggers:vec!["3".into()], message:Some("Bad End".into())},
             ],
             password: None, 
         },
@@ -145,9 +182,9 @@ fn main() {
             name: "Security office".into(),
             desc: "You sneak into the security office. There are lots of things lying around and cameras on the wall. Do you investigate (1) the cameras, (2) the fridge, (3) the posters on the wall".into(),
             paths:vec![
-                Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into())},
+                Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("The system is password protect but theres a hint! I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? (Format like 'A ___'".into())},
                 Path{target:ChallengeID(10), triggers:vec!["2".into()], message:Some("Bad End".into())},
-                Path{target:ChallengeID(8), triggers:vec!["1".into()], message:Some("Congrats you found blueprints that show you where the painting is".into())},
+                Path{target:ChallengeID(8), triggers:vec!["3".into()], message:Some("Congrats you found blueprints that show you where the painting is".into())},
             ],
             password: Some("A map".into()), 
         },
@@ -156,7 +193,7 @@ fn main() {
             desc: "You finally arrive at the painting, how do you get it off the wall: (1) cut it out of the frame, (2) pick the security lock, (3) use acetone to dissolve the clue".into(),
             paths:vec![
                 Path{target:ChallengeID(9), triggers:vec!["1".into()], message:None},
-                Path{target:ChallengeID(9), triggers:vec!["2".into()], message:None},
+                Path{target:ChallengeID(13), triggers:vec!["2".into()], message:None},
                 Path{target:ChallengeID(9), triggers:vec!["3".into()], message:None},
             ],
             password: None, 
@@ -191,6 +228,12 @@ fn main() {
                 Path{target:ChallengeID(4), triggers:vec!["2".into()], message:Some("The guard screams and claws at their eyes and you manage to escape during their suffering.".into())},
                 Path{target:ChallengeID(5), triggers:vec!["1".into()], message:Some("".into())},
             ],
+            password: None, 
+        },
+        Challenge { // 13
+            name: "Lock picking".into(),
+            desc: "You've unlocked the painting! 1 to End Game".into(),
+            paths:vec![Path{target:ChallengeID(9), triggers:vec!["1".into()], message:None},],
             password: None, 
         }
 
@@ -254,7 +297,7 @@ fn main() {
         };
         // We don't want to move out of rooms, so we take a reference
         let here = &challenges[current_challenge_id.0];
-        println!("{}\n{}", here.name, here.desc);
+        println!("{}\n", here.desc);
 
         // get player input
         io::stdout().flush().unwrap();
@@ -277,18 +320,32 @@ fn main() {
                     // Check if this path leads to ending the game
                     if selected_path.target.0 == 10 || selected_path.target.0 == 9{
                         println!("Game Over!");
-                        return; // End the game here
+                        return; // eng the game here
+                    }
+
+                    // lock picking
+                    if selected_path.target.0 == 13 {
+                        // check if the  current is the lock-picking challenge - 13
+                        let lock_picked = lock_picking_challenge();
+                        if lock_picked {
+                            println!("You've successfully picked the lock and progressed to the next challenge.");
+                            // Move to the next challenge 
+                            
+                        } else {
+                            println!("You can't get the painting off by picking the lock");
+                            //  return to original challenge
+                            current_challenge_id = ChallengeID(8);
+                        }
                     }
 
                     // password checking
                     if let Some(password) = current_challenge.password.clone() {
-                        println!("This area is password protected. Enter the password to proceed:");
                         let mut password_input = String::new();
                         io::stdin().read_line(&mut password_input).unwrap();
                         let password_input = password_input.trim();
 
                         if password_input == password {
-                            println!("Password correct! You may proceed.");
+                            println!("Password correct! Access approved.");
                         } else {
                             println!("Incorrect password. Access denied.");
                             continue; //go back to the security office options
@@ -298,7 +355,7 @@ fn main() {
                     // Move to the next challenge based on the selected path's target
                     current_challenge_id = selected_path.target;
                 } else {
-                    println!("Invalid choice. Please select a valid option.");
+                    println!("Invalid. Please select a valid option.");
                 }
             }
             Err(_) => {
