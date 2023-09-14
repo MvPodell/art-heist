@@ -259,9 +259,9 @@ fn main() {
     println!("This is a choose your own adventure. Be sure to make smart and careful decisions to win the game.");
     // pick resources
     let mut selected_resources = Vec::new();
-    println!("What tools will you carry into the museum with you? Some tools may seem useless but are in actuality very useful.");
+    println!("What tools will you carry into the museum with you? Some tools may seem useless but are in actuality very useful. Pick three.");
     enter_to_continue();
-    println!("Available Resources:");
+    println!("Available Resources (Pick 3):");
     for (index, resource) in available_resources.iter().enumerate() {
         println!("{}. {} - {}", index + 1, resource.name, resource.description);
     }
